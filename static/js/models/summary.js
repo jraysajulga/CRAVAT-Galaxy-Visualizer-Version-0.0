@@ -18,6 +18,7 @@ define([],
 
 				this.variantModel.on('change:data', this.getVariantData, this);
 				this.variantModel.on('change:length', this.getVariantDataLength, this);
+				this.variantModel.on('change:Summary Data', this.renderCircosPlot, this);
 				this.geneModel.on('change:data', this.getGeneData, this);
 				this.geneModel.on('change:length', this.getGeneDataLength, this);
 				this.noncodingModel.on('change:length', this.getNoncodingData, this);  // Only the length is needed for noncoding data.
@@ -43,7 +44,7 @@ define([],
 				/*variantStats = this.variantModel.countAndGet({toCount : ['CGL driver class', 'Sequence ontology'],
 												toGet : ['HUGO symbol', 'Chromosome', 'Position', 'Sequence ontology']});*/
 
-				columns = this.variantModel.getColumns(['CGL driver class', 'Gene', 'Sequence ontology','GeneCards summary (from http://www.genecards.org)']);
+				columns = this.variantModel.getColumns(['CGL driver class', 'HUGO symbol', 'Sequence ontology','GeneCards summary (from http://www.genecards.org)']);
 				
 				
 				this.set('Job ID', this.model.jobID);
@@ -64,8 +65,28 @@ define([],
 				this.set('Number of variants', this.variantModel.get('length'));
 				this.set('Cancer Genome Landscape',this.countInstancesOf(cancerGenomeLandscape));
 				this.set('Sequence Ontologies',this.countInstancesOf(sequenceOntologies));
-				this.set('Circos Plot', this.variantModel.getColumns(['Chromosome', 'Position', 'Sequence ontology', 'HUGO symbol']));
+				//var circosData = this.variantModel.getColumns(['Chromosome', 'Position', 'Sequence ontology', 'HUGO symbol']);
+				//this.set('Circos Plot', circosData);
 			},
+
+			renderCircosPlot : function(){
+				var data = this.variantModel.get('Summary Data');
+				this.variantModel.off('change:Summary Data');
+				var headers = data.shift();
+				var circosData = {};
+				var value;
+				var category;
+				for (var x = 0; x < headers.length; x++){
+					category = [];
+					for (var y = 0; y < data.length; y++){
+						value = data[y][x];
+						category.push(value);
+					}
+					circosData[headers[x]] = category;
+				}
+				this.set('Circos Plot', circosData);
+			},
+
 
 			getVariantDataLength : function(){
 				this.set('Number of variants', this.variantModel.get('length'));

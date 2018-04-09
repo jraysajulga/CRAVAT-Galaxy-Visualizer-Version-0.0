@@ -24,8 +24,8 @@ define(['plugin/viewer'],
         render : function(){
             this.$el.append(this.contentView.tabViewer.el);
             this.$el.append(this.contentView.el);
-            //this.$el.append(this.portlet.el);
-            $('.nav-tabs button:eq(0)').click();
+            this.$el.append(this.footer);
+            $('.nav-tabs button:eq(2)').click();
         }
     });
 });

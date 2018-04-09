@@ -10,9 +10,6 @@ define(['plugin/Views/sidebar', 'plugin/lib/cytoscape', 'plugin/lib/nvd3_pie','p
 				this.model.on('change', this.changed, this);
 			},
 
-			change : function(){
-				console.log('asd;flasd;lfj');
-			},
 
 			loadIndicator : function(){
             	this.$el.append('<div class="indicator"><h2>Retrieving Data...</h2><div class="loaderIndicator"></div></div>');
@@ -22,7 +19,8 @@ define(['plugin/Views/sidebar', 'plugin/lib/cytoscape', 'plugin/lib/nvd3_pie','p
 				this.sidebar.renderSummary();
 				this.graphs = {'Pie Charts' : ['Mutations', 'Cancer-Genome-Landscape', 'Sequence-Ontologies']};
 				this.$el.html(this.sidebar.el);
-				this.$el.append(["<div class='summary'>",
+				$rightCell = $('<div>', {'class' : 'right-cell'});
+				$rightCell.append(["<div class='summary'>",
 									"<div id='pie-charts'>",
 										"<div id=", this.graphs['Pie Charts'][0] ," class='pie-chart bordered'><svg></svg></div>",
 										"<div id=", this.graphs['Pie Charts'][1] ," class='pie-chart bordered'><svg></svg></div>",
@@ -32,6 +30,7 @@ define(['plugin/Views/sidebar', 'plugin/lib/cytoscape', 'plugin/lib/nvd3_pie','p
 									'<div class="summaryTable"><h2>Top Genes</h2><table id=','"top-genes-table">','</table></div>',
 									'<div id="ndex" class="bordered"><h2>NDEX Networks</h2><div id="cy"></div></div>',
 								'</div>'].join(''));
+				this.$el.append($rightCell);
 
 				this.drawPieChart({data : this.convertToKeyValuePair({'Number of noncoding variants' : this.model.get('Number of noncoding variants'),
 																	'Number of variants' : this.model.get('Number of variants')}),
@@ -123,6 +122,16 @@ define(['plugin/Views/sidebar', 'plugin/lib/cytoscape', 'plugin/lib/nvd3_pie','p
 						dataNDEX.push({group: "edges", classes: i,data: { id: 'e' + n, source: startpt, target: endpt}});
 					}
 				}	
+
+				edges = dataNDEX.filter(function(a){
+					return a.group == 'nodes'
+				})
+				nodes = dataNDEX.filter(function(a){
+					return a.group == 'edges'
+				})
+				console.log(dataNDEX)
+				console.log('Contains ' + edges.length + ' edges');
+				console.log('Contains ' + nodes.length + ' nodes');
 
 				var cy = cytoscape({
 

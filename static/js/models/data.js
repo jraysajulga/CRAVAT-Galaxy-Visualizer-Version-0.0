@@ -80,13 +80,26 @@ define([],
 			getColumns : function(headers){
 				data = this.get('data');
 				columns = {};
+				var indices = [];
 				for (var i = 0; i < headers.length; i++){
 					index = this.allHeaders.indexOf(headers[i]);
+					indices.push(index);
 					columns[headers[i]] = [];
 					for (var j = 0; j < data.length; j++){
 						columns[headers[i]].push(data[j][index]);
 					}
 				}
+				// var xhr = jQuery.getJSON('/api/datasets/' + this.id, {
+				// 		data_type : 'raw_data',
+				// 		provider : 'column',
+				// 		indeces : indices.join(',')
+				// 	});
+
+				// xhr.done(function(response){
+				// 	console.log(response.data);
+				// });
+
+
 				return columns;
 			},
 
@@ -137,6 +150,7 @@ define([],
 
 			setSortingData : function(data){
 				this.data = data;
+				console.log(data);
 				this.allHeaders = data.shift();
 				this.set('headerConfig', this.formatHeaderConfig(this.allHeaders));
 				this.fillOutEndData();

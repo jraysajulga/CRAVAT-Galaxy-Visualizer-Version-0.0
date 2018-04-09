@@ -2,7 +2,7 @@ define(['plugin/Views/loader'],
       function(Loader){
             return Backbone.View.extend({
 
-                  className : 'sidebar',
+                  className : 'left-cell',
 
                   tpl: _.template(['<p></p>','<%= jobName %>',
                     //'<p></p><b>Input File: </b>', '<%= inputFile %>',
@@ -18,22 +18,60 @@ define(['plugin/Views/loader'],
 
                   loaderTpl: _.template('You have more variants than CRAVAT Result Viewer can display. Use filters below to reduce the number of variants to load. When 100,000 or fewer remain, they can be retrieved with the "Load" button'),
 
+                  events: {
+                    'click .sidebar-button' : 'toggleVisibility'
+                  },
 
                   initialize : function(options){
                       this.columnTypeCollection = new ColumnTypeCollection({model : this.model});
-                      this.model.on('change:headerConfig', this.render, this);
+                      this.model.on('change:headerConfig', this.renderColumnOptions, this);
+                      this.render();
                   },
 
+                  toggleVisibility : function(){
+                    console.log('Togglign visibility');
+                    if (parseInt(this.$el.css('width')) <= 20){
+                      this.$el.css('max-width', '235px');  
+                      //this.$el.css('max-width', '250px');  
+                      this.button.html('<');
+                    } else{
+                      this.$el.css('max-width', '15px');
+                      //this.$el.css('max-width', '15px');
+                      this.button.html('>');
+                    }
+                  },  
+
                   render : function(){
-                      //button  = new VisibilityButton({target : this.columnTypeCollection.$el});
-                      //this.$el.append(button.el);
+                      $sidebar = $('<div>', {class : 'sidebar'});
+
                       var $content = $('<div>', {'class' : 'column-type-collection'});
                       $content.append(this.model.get('Job ID'));
-                      this.$el.html(new Box({name : 'Job Info', content: $content}).el);
-                      this.$el.append(new Box({name : 'Columns', content : this.columnTypeCollection}).el);
+                      this.button = $('<button>', {'class' : 'sidebar-button'});
+                      this.button.append('<');
+                      $sidebar.append(this.button);
+                      $sidebar.append(new Box({name : 'Job Info', content: $content}).el);
+                      this.$el.html($sidebar);
+                  },
+
+                  renderColumnOptions : function(){
+                      $sidebar = $('<div>', {class : 'sidebar'});
+
+                      var $content = $('<div>', {'class' : 'column-type-collection'});
+                      $content.append(this.model.get('Job ID'));
+
+                      this.button = $('<button>', {'class' : 'sidebar-button'});
+                      this.button.append('<');
+                      $sidebar.append(this.button);
+                      $sidebar.append(new Box({name : 'Job Info', content: $content}).el);
+                      $sidebar.append(new Box({name : 'Columns', content : this.columnTypeCollection}).el);
+                      this.$el.html($sidebar);
                   },
 
                   renderSummary : function(){
+                      this.button = $('<button>', {'class' : 'sidebar-button'});
+                      this.button.append('<');
+
+                      $sidebar = $('<div>', {class : 'sidebar'});
                       var $content = $('<div>', {'class' : 'column-type-collection'});
                       $content.append(this.tpl({jobName : this.model.get('Job ID'),
                                                   errorNumber : this.model.get('Number of errors'),
@@ -41,8 +79,9 @@ define(['plugin/Views/loader'],
                                                   geneNumber : this.model.get('Number of genes'),
                                                   sampleNumber : 'N/A',
                                                   noncodingNumber : this.model.get('Number of noncoding variants')}));
-
-                      this.$el.html(new Box({name : 'Job Info', content: $content}).el);
+                      $sidebar.html(this.button);
+                      $sidebar.append(new Box({name : 'Job Info', content: $content}).el);
+                      this.$el.html($sidebar);
                   },
 
                   renderLoader : function(){

@@ -23,7 +23,7 @@ define(['plugin/Views/tabs','plugin/Models/data','plugin/collections/data','plug
                                                             'HUGO symbol',
                                                             'Sequence ontology',
                                                             'Protein sequence change',
-                                                            'CHASM score',
+                                                            'VEST p-value',
                                                             'COSMIC variant count',
                                                             'gnomAD AF Total',
                                                             'GWAS Phenotype (GRASP)']});
@@ -33,7 +33,7 @@ define(['plugin/Views/tabs','plugin/Models/data','plugin/collections/data','plug
                                                     'HUGO symbol',
                                                     'Number of variants',
                                                     'Sequence ontology',
-                                                    'CHASMA gene p-value',
+                                                    'CHASM gene p-value',
                                                     'VEST gene p-value',
                                                     'CGL driver class',
                                                     'Number of samples with gene mutated']});

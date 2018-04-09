@@ -51,7 +51,6 @@ define(['plugin/views/sidebar', 'plugin/views/table'],
 			},
 
 			loadTable : function(){
-				console.log('Loading table');
 				if (!this.model.has('Unique values')){
 					this.$el.html(this.sidebar.el);
 					this.$el.append(this.dataTable.el);

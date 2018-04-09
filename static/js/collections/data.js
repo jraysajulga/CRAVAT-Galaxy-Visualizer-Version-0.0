@@ -65,6 +65,7 @@ define (['plugin/test-data'],
 					}
 
 					view.fetchDatasets();
+					view.fetchSummaryData();
 
 				});
 			},
@@ -117,10 +118,26 @@ define (['plugin/test-data'],
 
 			},
 
+			fetchSummaryData : function(){
+				var ID = this.datasetIDs[this.reportNames[0]];
+				var indices = '2,3,10,9';
+				var xhr = jQuery.getJSON('/api/datasets/' + ID, {
+					data_type : 'raw_data',
+					provider : 'column',
+					indeces : indices
+				});
+				var view = this;
+				xhr.done(function(response){
+					console.log('CIrcos data finished');
+					view.at(0).set('Summary Data', response.data);
+				});
+
+			},
+
 			fetchDatasets : function(){
 				console.log('2.) Obtaining data for each dataset: ');
 				// Issues each dataModel to fetch their datasets by feeding them their corresponding dataset IDs.
-				this.lim = 100000;
+				this.lim = 100;
 				this.comment_lines = 11;
 				var view = this;
 				for (var i = 0; i < this.reportNames.length; i++){
@@ -129,6 +146,7 @@ define (['plugin/test-data'],
 
 					// Obtains the lengths of the datasets
 					var xhr2 = jQuery.getJSON('/api/datasets/' + ID);
+					this.at(i).id = ID;
 
 					xhr2.done(function(response){
 						var dataset = view.datasets.filter(function(a){
@@ -148,33 +166,35 @@ define (['plugin/test-data'],
 					});
 
 					if (false){
-						if (i == 2){
+						//if (i == 2){
+						if (false){	
 							view.at(i).setSortingData(ID);
 						} else{
-							view.at(i).setData(testData[view.at(i).name]);
+							var data = testData[view.at(i).name];
+							view.at(i).setData(data);
 							//view.at(i).setData()
 						}
-
 					} else {
 						xhr.done(function(response){
 							resp = this;
 							var dataset = view.datasets.filter(function(a){
 								return a.dataset_id == resp.url.match('/datasets/([a-f|0-9]+)')[1]
 							})
-							if (view.name == 'noncoding'){
-								console.log(resp.url);
-							}
 							i = dataset[0].id;
 							view.targetDataset = view.at(i);
 
-							if (response.data.length >= view.lim - 1){
+							//if (response.data.length >= view.lim - 1){
+							if (response.data.length > 100000){
 							//if (true){
+							//if (i == 3){
+								console.log('Setting sorting data');
 								var xhr = jQuery.getJSON('/api/datasets/' + dataset[0].dataset_id, {
 									data_type : 'raw_data',
 									provider : 'column',
 								});
 								// Consider offsetting by the limit and appending to the end of the truncated dataset.
 								xhr.done(function(response){
+									console.log('Finished!');
 									resp = this;
 									var dataset = view.datasets.filter(function(a){
 										return a.dataset_id == resp.url.match('/datasets/([a-f|0-9]+)')[1]
