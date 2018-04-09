@@ -5,7 +5,7 @@
         info += ' : ' + hda.info
 
     # optionally bootstrap data from dprov
-    #data = list( hda.datatype.dataset_column_dataprovider( hda, limit=20 ) )
+    data = list( hda.datatype.dataset_column_dataprovider( hda, limit=20 ) )
 
     root            = h.url_for( "/" )
     app_root        = root + "plugins/visualizations/craviz/static/js"
@@ -40,11 +40,12 @@
 
     </head>
     <body>
-        <div id="container">
 
-            <div class="chart-header">
-                <h2>${title or default_title}</h2>
-            </div>
+        <div class="chart-header">
+            ${title or default_title}
+        </div>
+
+        <div id="container">
 
 
 
@@ -81,14 +82,13 @@
                 }
             });
 
-
             $(function() {
                 require( [ 'plugin/app' ], function( App ) {
                     var config = ${ h.dumps( config ) };
                     var app = new App({
                         dataset_id  : config.dataset_id});;
                     $('body').append(app.$el);
-                    $('body').append(app.footer);
+                    //$('body').append(app.footer);
                 });
             });
         </script>
